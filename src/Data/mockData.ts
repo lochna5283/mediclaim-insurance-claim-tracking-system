@@ -5,7 +5,7 @@ export const mockEmployees: Employee[] = [
     id: '1',
     maidNo: 'EMP001',
     name: 'John Smith',
-    phoneNo: '+1-555-0123',
+    phoneNo: '+1-555-0122',
     type: 'Officer',
     createdAt: new Date('2024-01-15')
   },

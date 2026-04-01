@@ -1,12 +1,12 @@
 import React from 'react';
-import { Activity, FileText, DollarSign, TrendingUp, Clock } from 'lucide-react';
+import { Activity, Users, FileText, DollarSign, TrendingUp, Clock } from 'lucide-react';
+import { mockClaims } from '../Data/mockData';
 
 const Dashboard: React.FC = () => {
-  // Placeholder values since mockClaims is removed
-  const totalClaims = 0;
-  const totalAmount = 0;
-  const approvedClaims = 0;
-  const pendingClaims = 0;
+  const totalClaims = mockClaims.length;
+  const totalAmount = mockClaims.reduce((sum, claim) => sum + claim.billAmount, 0);
+  const approvedClaims = mockClaims.filter(claim => claim.status === 'Approved').length;
+  const pendingClaims = mockClaims.filter(claim => claim.status === 'Under Review').length;
 
   const stats = [
     {
@@ -67,7 +67,7 @@ const Dashboard: React.FC = () => {
         ))}
       </div>
 
-      {/* Recent Claims Placeholder */}
+      {/* Recent Claims */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100">
         <div className="p-6 border-b border-gray-100">
           <h2 className="text-xl font-semibold text-gray-900">Recent Claims</h2>
@@ -84,11 +84,34 @@ const Dashboard: React.FC = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              <tr>
-                <td className="px-6 py-4 text-sm text-gray-500" colSpan={5}>
-                  No claim data available.
-                </td>
-              </tr>
+              {mockClaims.map((claim) => (
+                <tr key={claim.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">{claim.employee.name}</div>
+                      <div className="text-sm text-gray-500">{claim.employee.type}</div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{claim.hospital}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    ${claim.billAmount.toLocaleString()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                      claim.status === 'Approved' ? 'bg-green-100 text-green-800' :
+                      claim.status === 'Under Review' ? 'bg-yellow-100 text-yellow-800' :
+                      claim.status === 'Rejected' ? 'bg-red-100 text-red-800' :
+                      claim.status === 'Paid' ? 'bg-blue-100 text-blue-800' :
+                      'bg-gray-100 text-gray-800'
+                    }`}>
+                      {claim.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {claim.createdAt.toLocaleDateString()}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
